@@ -8,14 +8,25 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         /* Body Styling */
         body {
             background-color: #121212;
             color: #E0E0E0;
-            padding: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #1E1E2F;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         /* Heading Styling */
@@ -29,94 +40,118 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 30px;
+            background: #2A2A3A;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         table th, table td {
-            padding: 12px;
+            padding: 14px;
             border: 1px solid #333;
             text-align: left;
         }
 
         table th {
-            background-color: #1E1E1E;
+            background-color: #292947;
             color: #FFFFFF;
         }
 
         table tr:nth-child(even) {
-            background-color: #1C1C1C;
+            background-color: #252545;
+        }
+
+        table tr:hover {
+            background: #34345A;
+            transition: 0.3s ease;
         }
 
         /* Links Styling */
         a {
-            color: #BB86FC;
-            text-decoration: none;
+            display: inline-block;
+            background: linear-gradient(45deg, #BB86FC, #6200EA);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
             font-weight: bold;
-            margin: 0 10px;
+            text-decoration: none;
+            transition: 0.3s;
         }
 
         a:hover {
-            text-decoration: underline;
+            background: linear-gradient(45deg, #9B67FC, #4A00EA);
+            transform: scale(1.05);
         }
 
         /* Paragraph Styling */
         p {
             margin: 5px 0;
-        }
-
-        /* Button-like Styling for Navigation Links */
-        a {
-            display: inline-block;
-            background-color: #2C2C2C;
-            padding: 10px 15px;
-            border-radius: 8px;
-        }
-
-        a:hover {
-            background-color: #3C3C3C;
+            font-size: 14px;
         }
 
     </style>
 </head>
 <body>
-    <h1>Welcome, {{ username }}</h1>
-    <h2>Your Transactions</h2>
-    <table>
-        <tr>
-            <th>Payer</th>
-            <th>Amount</th>
-            <th>Split Type</th>
-            <th>Details</th>
-        </tr>
-        {% for bill in bills %}
-        <tr>
-            <td>{{ bill[0] }}</td>
-            <td>{{ bill[1] }}</td>
-            <td>{{ bill[2] }}</td>
-            <td>
-                {% for entry in bill[3:] %}
-                    <p>{{ entry }}</p>
-                {% endfor %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="container">
+        <h1>Welcome, {{ username }}</h1>
+        <h2>Amount You Owe (Per Person)</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+            {% for owed in amount_due_list %}
+            <div style="border: 1px solid #252545; padding: 15px; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); width: 200px; background-color: #252545;">
+                <h3 style="margin: 0;">{{ owed[0] }}</h3>
+                <p style="font-size: 18px; font-weight: bold; color: #ff5733;">₹{{ owed[1] }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        
 
-    <h2>Amount You Owe</h2>
-    <table>
-        <tr>
-            <th>Owed To</th>
-            <th>Amount</th>
-        </tr>
-        {% for jis in amount_due %}
-        <tr>
-            <td>{{ jis[0] }}</td>
-            <td>{{ jis[1] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <h2>Your Transactions</h2>
+        <table>
+            <tr>
+                <th>Payer</th>
+                <th>Amount</th>
+                <th>Split Type</th>
+                <th>Details</th>
+            </tr>
+            {% for bill in bills %}
+            <tr>
+                <td>{{ bill[0] }}</td>
+                <td>{{ bill[1] }}</td>
+                <td>{{ bill[2] }}</td>
+                <td>
+                    {% for entry in bill[3:] %}
+                        <p>{{ entry }}</p>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
 
-    <br>
-    <a href="{{ url_for('add_bill') }}">Add New Bill</a> |
-    <a href="{{ url_for('logout') }}">Logout</a>
+        <h2>Total Transactions: ₹{{ total_transactions }}</h2>
+        
+
+        <h2>Owed History</h2>
+        <table>
+            <tr>
+                <th>Owed To</th>
+                <th>Amount</th>
+                <th>Total Bill</th>
+                <th>Split Type</th>
+            </tr>
+            {% for entry in owed_history %}
+            <tr>
+                <td>{{ entry[0] }}</td>
+                <td>₹{{ entry[1] }}</td>
+                <td>₹{{ entry[2] }}</td>
+                <td>{{ entry[3] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <h2>Total Amount Owed: ₹{{ total_amount_owed }}</h2>
+        
+        <br>
+        <a href="{{ url_for('add_bill') }}">➕ Add New Bill</a> &nbsp;
+        <a href="{{ url_for('logout') }}">🚪 Logout</a>
+    </div>
 </body>
 </html>

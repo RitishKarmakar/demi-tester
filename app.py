@@ -83,27 +83,49 @@ def register():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    cosmic = read_bills()
     bills = read_bills()
     user_bills = [bill for bill in bills if current_user.username in bill]
-    dynamite = []
-    for bill in cosmic:
-        kepler = []
-        for pic in bill[3::]:
-            if current_user.username in pic:
-                z =  pic.split(":")
-                kepler.append(bill[0])
-                kepler.append(z[1])
-                dynamite.append(kepler)
-    amount_due = dynamite
-    for bill in user_bills:
-        
+
+    # Track the total transactions amount
+    total_transactions = sum(float(bill[1]) for bill in user_bills)
+
+    # Track amount owed per person
+    amount_due = {}
+    owed_history = []
+    total_amount_owed = 0
+
+    for bill in bills:
         payer = bill[0]
         if payer != current_user.username:
             for entry in bill[3:]:
                 user, amount = entry.split(':')
-                
-    return render_template('dashboard.html', username=current_user.username, bills=user_bills, amount_due=amount_due)
+                if user == current_user.username:
+                    amount = float(amount)
+                    
+                    # Track amount owed per payer
+                    if payer in amount_due:
+                        amount_due[payer] += amount
+                    else:
+                        amount_due[payer] = amount
+                    
+                    # Track owed history
+                    owed_history.append([payer, amount, bill[1], bill[2]])  # Payer, amount, total bill, split type
+                    
+                    total_amount_owed += amount
+
+    # Convert amount_due dictionary to list for display
+    amount_due_list = [[payer, amount] for payer, amount in amount_due.items()]
+
+    return render_template(
+        'dashboard.html',
+        username=current_user.username,
+        bills=user_bills,
+        amount_due_list=amount_due_list,
+        owed_history=owed_history,
+        total_transactions=total_transactions,
+        total_amount_owed=total_amount_owed
+    )
+
 
 @app.route('/add_bill', methods=['GET', 'POST'])
 @login_required
