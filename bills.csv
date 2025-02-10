@@ -1,0 +1,6 @@
+RK,450,custom,PM:200
+RK,500,equal,PM:250.0
+RK,500,custom,PM:17
+PM,200,equal,RK:100.0
+PM,400,custom,RK:100,RN:200
+PM,900,equal,RK:300.0,RN:300.0

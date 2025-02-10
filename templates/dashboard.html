@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Body Styling */
+        body {
+            background-color: #121212;
+            color: #E0E0E0;
+            padding: 20px;
+        }
+
+        /* Heading Styling */
+        h1, h2 {
+            color: #FFFFFF;
+            margin-bottom: 20px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #333;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #1E1E1E;
+            color: #FFFFFF;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #1C1C1C;
+        }
+
+        /* Links Styling */
+        a {
+            color: #BB86FC;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Paragraph Styling */
+        p {
+            margin: 5px 0;
+        }
+
+        /* Button-like Styling for Navigation Links */
+        a {
+            display: inline-block;
+            background-color: #2C2C2C;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        a:hover {
+            background-color: #3C3C3C;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Welcome, {{ username }}</h1>
+    <h2>Your Transactions</h2>
+    <table>
+        <tr>
+            <th>Payer</th>
+            <th>Amount</th>
+            <th>Split Type</th>
+            <th>Details</th>
+        </tr>
+        {% for bill in bills %}
+        <tr>
+            <td>{{ bill[0] }}</td>
+            <td>{{ bill[1] }}</td>
+            <td>{{ bill[2] }}</td>
+            <td>
+                {% for entry in bill[3:] %}
+                    <p>{{ entry }}</p>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Amount You Owe</h2>
+    <table>
+        <tr>
+            <th>Owed To</th>
+            <th>Amount</th>
+        </tr>
+        {% for jis in amount_due %}
+        <tr>
+            <td>{{ jis[0] }}</td>
+            <td>{{ jis[1] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <a href="{{ url_for('add_bill') }}">Add New Bill</a> |
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>

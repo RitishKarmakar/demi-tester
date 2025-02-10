@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a Bill</title>
+</head>
+<body>
+    <h1>Add a Bill</h1>
+    <form action="{{ url_for('add_bill') }}" method="post">
+        <label>Amount:</label>
+        <input type="number" name="amount" required>
+
+        <label>Split Type:</label>
+        <select name="split_type" id="split_type" onchange="toggleAmounts()">
+            <option value="equal">Equal Split</option>
+            <option value="custom">Custom Amounts</option>
+        </select>
+
+        <h3>Select Users to Split With:</h3>
+        {% for user in users %}
+            <label>
+                <input type="checkbox" name="users" value="{{ user }}" onchange="toggleAmounts()">
+                {{ user }}
+            </label>
+            <input type="number" name="{{ user }}" class="amount-input" placeholder="Enter amount" style="display: none;">
+            <br>
+        {% endfor %}
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        function toggleAmounts() {
+            let splitType = document.getElementById('split_type').value;
+            let checkboxes = document.querySelectorAll('input[name=\"users\"]');
+            checkboxes.forEach(checkbox => {
+                let amountInput = document.querySelector('input[name=\"' + checkbox.value + '\"]');
+                if (splitType === 'custom' && checkbox.checked) {
+                    amountInput.style.display = 'inline';
+                } else {
+                    amountInput.style.display = 'none';
+                    amountInput.value = '';  // Clear value if hidden
+                }
+            });
+        }
+    </script>
+
+    <br>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>
